@@ -2,6 +2,7 @@
 /*
  * @author Airmanbzh
  */
+require_once ('./Markup.class.php');
 
 class HtmlTag extends Markup
 {
