@@ -31,17 +31,17 @@ Create HTML tags and render them efficiently.
     echo $html->tag('div')
     // <div></div>
 
-    echo(HtmlTag::createElement('p')->setText('some content'));
+    echo(HtmlTag::createElement('p')->text('some content'));
     // <p>some content</p>
 
 ### Structured tags
 
-	echo(HtmlTag::createElement('div')->addElement('a')->setText('a text'));
+	echo(HtmlTag::createElement('div')->addElement('a')->text('a text'));
     // <div>
 
 	$container HtmlTag::createElement('div');
-	$container->addElement('p')->setText('a text');
-	$container->addElement('a')->setText('a link');
+	$container->addElement('p')->text('a text');
+	$container->addElement('a')->text('a link');
     // <div><p>a text</p><a>a link</a></div>
 	
 ### Attributes
@@ -51,7 +51,7 @@ Create HTML tags and render them efficiently.
     $tag = $html->tag('a')
 		->set('href','./sample.php')
 		->set('id','myID')
-		->setText('my link');
+		->text('my link');
 	echo( $tag );
     // <a href='./sample.php' id='myID'>my link</a>
 	
@@ -67,7 +67,7 @@ Create HTML tags and render them efficiently.
     $tag = $html->tag('div')
 		->addClass('firstClass')
 		->addClass('secondClass')
-		->setText('my content')
+		->text('my content')
 		->removeClass('firstClass');
 	echo( $tag );
     // <div class="secondClass">my content</div>
