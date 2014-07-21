@@ -16,12 +16,6 @@ Create HTML tags and render them efficiently.
  - it makes templates cleaner
  - it's easy to use and fast to execute
 
-## Instanciate an HTML Writer
-
-	require_once('HtmlTag.class.php');
-
-    $html = new phpHtmlWriter();
-
 ## Render tags
 
     echo(HtmlTag::createElement('a'));
