@@ -31,7 +31,7 @@ Create HTML tags and render them efficiently.
 ### Structured tags
 
 	echo(HtmlTag::createElement('div')->addElement('a')->text('a text'));
-    // <div>
+    // <div><a>a text</a></div>
 
 	$container HtmlTag::createElement('div');
 	$container->addElement('p')->text('a text');
@@ -68,8 +68,22 @@ Create HTML tags and render them efficiently.
 	
 ### More
 
-	By default, contents are generate before text.
-	For example : <div><a>sample</a>my text</div>
+	Text and content are generated according to the order of addition
+	$tag = $html->tag('p')
+		->text('a text')
+		->addElement('a')
+		->text('a link');
+	// <p>ma text<a>a link</a></p>
 	
-	You can reverse this order using 'showTextBeforeContent()' method
-	Example : <div>my text<a>sample</a></div>
+	To generate content before text, 2 solutions :
+	$tag = $html->tag('p')
+		->addElement('a')
+		->text('a link')
+		->getParent()
+		->text('a text');
+	or
+	$tag = $html->tag('p');
+	$tag->addElement('a')->text('a link');
+	$tag->text('a text');
+	
+	// <p><a>a link</a>a text</p>
