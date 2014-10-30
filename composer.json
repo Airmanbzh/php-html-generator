@@ -1,5 +1,5 @@
 {
-	"name": "Airmanbzh/php-html-generator",
+	"name": "airmanbzh/php-html-generator",
 	"type": "package",
 	"description": "PHP html generator",
 	"keywords": ["generator", "html", "php"],
