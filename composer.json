@@ -16,6 +16,6 @@
 		"issues": "https://github.com/Airmanbzh/php-html-generator/issues"
 	},
 	"require": {
-		"php": ">=5.3.*"
+		"php": ">=5.3.0"
 	}
 }
