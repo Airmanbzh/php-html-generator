@@ -13,7 +13,7 @@
 		}
 	],
 	"autoload": {
-		"psr-4": {"HtmlGenerator\\": ""},
+		"psr-4": {"HtmlGenerator\\": ""}
 	},
 	"support": {
 		"issues": "https://github.com/Airmanbzh/php-html-generator/issues"
