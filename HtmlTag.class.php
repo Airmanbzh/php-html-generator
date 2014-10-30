@@ -2,7 +2,7 @@
 /*
  * @author Airmanbzh
  */
-require_once ('./Markup.class.php');
+namespace HtmlGenerator;
 
 class HtmlTag extends Markup
 {
