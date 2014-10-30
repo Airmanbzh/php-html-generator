@@ -2,6 +2,7 @@
 /*
  * @author Airmanbzh
  */
+namespace HtmlGenerator;
 
 class Markup
 {
