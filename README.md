@@ -33,7 +33,7 @@ Create HTML tags and render them efficiently.
 	echo(HtmlTag::createElement('div')->addElement('a')->text('a text'));
     // <div><a>a text</a></div>
 
-	$container HtmlTag::createElement('div');
+	$container = HtmlTag::createElement('div');
 	$container->addElement('p')->text('a text');
 	$container->addElement('a')->text('a link');
     // <div><p>a text</p><a>a link</a></div>
