@@ -249,7 +249,10 @@ class Markup
         $string = '';
         if (!is_null($this->content)) {
             foreach ($this->content as $c) {
-                $string .= CHR(13) . CHR(10) . CHR(9) . $c->toString();
+                if ($this->tag != 'textarea') {
+                    $string .= CHR(13) . CHR(10) . CHR(9);
+                }
+                $string .= $c->toString();
             }
         }
         return $string;
