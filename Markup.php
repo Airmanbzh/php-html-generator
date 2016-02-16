@@ -244,12 +244,17 @@ class Markup
         return $string;
     }
 
+    /**
+     * return current list of content as a string
+     * @return string
+     */
     protected function contentToString()
     {
         $string = '';
         if (!is_null($this->content)) {
             foreach ($this->content as $c) {
-                $string .= CHR(13) . CHR(10) . CHR(9) . $c->toString();
+                $string .= !empty($c->tag) ? CHR(13) . CHR(10) . CHR(9) : '';
+                $string .= $c->toString(); 
             }
         }
         return $string;
