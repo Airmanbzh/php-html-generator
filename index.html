@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Php-html-generator by Airmanbzh</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Php-html-generator</h1>
+        <h2>Php class to generate html code</h2>
+        <a href="https://github.com/Airmanbzh/php-html-generator" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="php-html-generator" class="anchor" href="#php-html-generator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PHP HTML GENERATOR</h1>
+
+<p>Create HTML tags and render them efficiently.</p>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
+
+<pre><code>return HtmlTag::createElement();
+// returns an empty HtmlTag Container
+
+return HtmlTag::createElement('a');
+// returns an HtmlTag containing a 'a' tag
+</code></pre>
+
+<h3>
+<a id="why-you-should-use-it" class="anchor" href="#why-you-should-use-it" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why you should use it</h3>
+
+<ul>
+<li>it always generates valid HTML and XHTML code</li>
+<li>it makes templates cleaner</li>
+<li>it's easy to use and fast to execute</li>
+</ul>
+
+<h2>
+<a id="render-tags" class="anchor" href="#render-tags" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Render tags</h2>
+
+<pre><code>echo(HtmlTag::createElement('a'));
+</code></pre>
+
+<h3>
+<a id="simple-tags" class="anchor" href="#simple-tags" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple tags</h3>
+
+<pre><code>echo $html-&gt;tag('div')
+// &lt;div&gt;&lt;/div&gt;
+
+echo(HtmlTag::createElement('p')-&gt;text('some content'));
+// &lt;p&gt;some content&lt;/p&gt;
+</code></pre>
+
+<h3>
+<a id="structured-tags" class="anchor" href="#structured-tags" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structured tags</h3>
+
+<pre><code>echo(HtmlTag::createElement('div')-&gt;addElement('a')-&gt;text('a text'));
+// &lt;div&gt;&lt;a&gt;a text&lt;/a&gt;&lt;/div&gt;
+
+$container = HtmlTag::createElement('div');
+$container-&gt;addElement('p')-&gt;text('a text');
+$container-&gt;addElement('a')-&gt;text('a link');
+// &lt;div&gt;&lt;p&gt;a text&lt;/p&gt;&lt;a&gt;a link&lt;/a&gt;&lt;/div&gt;
+</code></pre>
+
+<h3>
+<a id="attributes" class="anchor" href="#attributes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Attributes</h3>
+
+<h4>
+<a id="classics-attributes-method--set" class="anchor" href="#classics-attributes-method--set" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Classics attributes (method : 'set')</h4>
+
+<pre><code>$tag = $html-&gt;tag('a')
+    -&gt;set('href','./sample.php')
+    -&gt;set('id','myID')
+    -&gt;text('my link');
+echo( $tag );
+// &lt;a href='./sample.php' id='myID'&gt;my link&lt;/a&gt;
+</code></pre>
+
+<h4>
+<a id="id-method--id" class="anchor" href="#id-method--id" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ID (method : 'id')</h4>
+
+<pre><code>$tag = $html-&gt;tag('div')
+    -&gt;id('myID');
+echo( $tag );
+// &lt;div id='myID'&gt;my link&lt;/a&gt;
+</code></pre>
+
+<h4>
+<a id="class-management-method--addclassremoveclass" class="anchor" href="#class-management-method--addclassremoveclass" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Class management (method : 'addClass'/'removeClass')</h4>
+
+<pre><code>$tag = $html-&gt;tag('div')
+    -&gt;addClass('firstClass')
+    -&gt;addClass('secondClass')
+    -&gt;text('my content')
+    -&gt;removeClass('firstClass');
+echo( $tag );
+// &lt;div class="secondClass"&gt;my content&lt;/div&gt;
+</code></pre>
+
+<h3>
+<a id="more" class="anchor" href="#more" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>More</h3>
+
+<pre><code>Text and content are generated according to the order of addition
+$tag = $html-&gt;tag('p')
+    -&gt;text('a text')
+    -&gt;addElement('a')
+    -&gt;text('a link');
+// &lt;p&gt;ma text&lt;a&gt;a link&lt;/a&gt;&lt;/p&gt;
+
+To generate content before text, 2 solutions :
+$tag = $html-&gt;tag('p')
+    -&gt;addElement('a')
+    -&gt;text('a link')
+    -&gt;getParent()
+    -&gt;text('a text');
+or
+$tag = $html-&gt;tag('p');
+$tag-&gt;addElement('a')-&gt;text('a link');
+$tag-&gt;text('a text');
+
+// &lt;p&gt;&lt;a&gt;a link&lt;/a&gt;a text&lt;/p&gt;
+</code></pre>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Airmanbzh/php-html-generator/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Airmanbzh/php-html-generator/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Airmanbzh/php-html-generator"></a> is maintained by <a href="https://github.com/Airmanbzh">Airmanbzh</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
