@@ -46,4 +46,25 @@ class HtmlTag extends Markup
         }
         return $this;
     }
+
+    /**
+     * Returns current list of attributes as a string $key="$val" $key2="$val2"
+     * Overrides the parent function to allow boolean value
+     * @return string
+     */
+    protected function attributesToString()
+    {
+        $string = '';
+        if (!is_null($this->attributeList)) {
+            foreach ($this->attributeList as $key => $value) {
+                if ($value!==false) {
+                    $string.= ' ' . $key;
+                    if ($value!==true) {
+                        $string.= '="' . (is_array($value) ? implode(' ', $value) : $value ) . '"';
+                    }
+                }
+            }
+        }
+        return $string;
+    }
 }
