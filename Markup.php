@@ -73,22 +73,16 @@ class Markup implements ArrayAccess
     /**
      *
      * Add element at an existing Markup
-     * @param Markup $tag
+     * @param Markup|string $tag
      * @return Markup instance
      */
     public function addElement($tag)
     {
-        $htmlTag = null;
-        if (is_object($tag) && get_class($tag) == get_class($this)) {
-            $htmlTag = $tag;
-            $htmlTag->_top = $this->_top;
-            $this->content[] = $htmlTag;
-        } else {
-            $class = get_class($this);
-            $htmlTag = new $class($tag, (is_null($this->_top) ? $this : $this->_top ));
-            $this->content[] = $htmlTag;
-        }
+        $htmlTag = (is_object($tag) && $tag instanceof self) ? $tag : new static($tag);
+        $htmlTag->_top = $this->getTop();
         $htmlTag->_parent = &$this;
+
+        $this->content[] = $htmlTag;
         return $htmlTag;
     }
 
@@ -174,6 +168,15 @@ class Markup implements ArrayAccess
     {
         $this->addElement('')->text = static::$avoidXSS ? static::unXSS($value) : $value;
         return $this;
+    }
+
+    /**
+     * Returns the top element
+     * @return Markup
+     */
+    public function getTop()
+    {
+        return $this->_top===null ? $this : $this->_top;
     }
 
     /**
@@ -267,7 +270,7 @@ class Markup implements ArrayAccess
      */
     public function __toString()
     {
-        return (is_null($this->_top) ? $this->toString() : $this->_top->toString());
+        return $this->getTop()->toString();
     }
 
     /**
