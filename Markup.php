@@ -43,6 +43,17 @@ class Markup implements ArrayAccess
     }
 
     /**
+     * Builds markup from static context
+     * @param string $tag The tag name
+     * @param array  $content The content of the current tag
+     * @return Markup
+     */
+    public static function __callStatic($tag, $content)
+    {
+        return self::createElement($tab)->text(implode('', $content));
+    }
+
+    /**
      * Create a new Markup
      * @param string $tag
      * @return Markup instance
