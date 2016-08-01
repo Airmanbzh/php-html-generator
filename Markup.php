@@ -51,12 +51,37 @@ class Markup implements ArrayAccess
     /**
      * Builds markup from static context
      * @param string $tag The tag name
-     * @param array  $content The content of the current tag
+     * @param array  $content The content of the current tag, first argument can be an array containing the attributes
      * @return Markup
      */
     public static function __callStatic($tag, $content)
     {
-        return self::createElement($tab)->text(implode('', $content));
+        return self::createElement($tag)
+            ->attr(count($content) && is_array($content[0]) ? array_pop($content) : array())
+            ->text(implode('', $content));
+    }
+
+    /**
+     * Add a children to the current element
+     * @param string $tag The name of the tag
+     * @param array  $content The content of the current tag, first argument can be an array containing the attributes
+     * @return Markup instance
+     */
+    public function __call($tag, $content)
+    {
+        return $this
+            ->addElement($tag)
+            ->attr(count($content) && is_array($content[0]) ? array_pop($content) : array())
+            ->text(implode('', $content));
+    }
+
+    /**
+     * Alias for getParent()
+     * @return Markup
+     */
+    public function __invoke()
+    {
+        return $this->getParent();
     }
 
     /**
@@ -76,7 +101,7 @@ class Markup implements ArrayAccess
      * @param Markup|string $tag
      * @return Markup instance
      */
-    public function addElement($tag)
+    public function addElement($tag = '')
     {
         $htmlTag = (is_object($tag) && $tag instanceof self) ? $tag : new static($tag);
         $htmlTag->_top = $this->getTop();
@@ -87,29 +112,32 @@ class Markup implements ArrayAccess
     }
 
     /**
-     * (Re)Define an attribute
-     * @param string $name
+     * (Re)Define an attribute or many attributes
+     * @param string|array $attribute
      * @param string $value
      * @return Markup instance
      */
-    public function set($name, $value)
+    public function set($attribute, $value = null)
     {
-        if (is_null($this->attributeList)) {
-            $this->attributeList = array();
+        if(is_array($attribute)) {
+            foreach ($attribute as $key => $value) {
+                $this[$key] = $value;
+            }
+        } else {
+            $this[$attribute] = $value;
         }
-        $this->attributeList[$name] = $value;
         return $this;
     }
 
     /**
      * alias to method "set"
-     * @param string $name
+     * @param string|array $attribute
      * @param string $value
      * @return Markup instance
      */
-    public function attr($name, $value)
+    public function attr($attribute, $value = null)
     {
-        return $this->set($name, $value);
+        return call_user_func_array([$this, 'set'], func_get_args());
     }
 
     /**
