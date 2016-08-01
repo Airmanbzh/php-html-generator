@@ -8,6 +8,12 @@ use ArrayAccess;
 
 class Markup implements ArrayAccess
 {
+    /** @var boolean Specifies if attribute values and text input sould be protected from XSS injection */
+    public static $avoidXSS = false;
+    
+    /** @var int The language convention used for XSS avoiding */
+    public static $outputLanguage = ENT_XML1;
+    
     protected static $_instance = null;
 
     protected $_top = null;
@@ -166,7 +172,7 @@ class Markup implements ArrayAccess
      */
     public function text($value)
     {
-        $this->addElement('')->text = $value;
+        $this->addElement('')->text = static::$avoidXSS ? static::unXSS($value) : $value;
         return $this;
     }
 
@@ -293,10 +299,25 @@ class Markup implements ArrayAccess
     protected function attributesToString()
     {
         $string = '';
-        if (!is_null($this->attributeList)) {
+        $XMLConvention = in_array(static::$outputLanguage, [ENT_XML1, ENT_XHTML]);
+        if (!empty($this->attributeList)) {
             foreach ($this->attributeList as $key => $value) {
-                if (!is_null($value)) {
-                    $string .= ' ' . $key . '="' . (is_array($value) ? implode(' ', $value) : $value ) . '"';
+                if ($value!==null && ($value!==false || $XMLConvention)) {
+                    $string.= ' ' . $key;
+                    if($value===true) {
+                        if ($XMLConvention) {
+                            $value = $key;
+                        } else {
+                            continue;
+                        }
+                    }
+                    $string.= '="' . implode(
+                        ' ',
+                        array_map(
+                            static::$avoidXSS ? 'static::unXSS' : 'strval',
+                            is_array($value) ? $value : [$value]
+                        )
+                    ) . '"';
                 }
             }
         }
@@ -317,5 +338,15 @@ class Markup implements ArrayAccess
             }
         }
         return $string;
+    }
+
+    /**
+     * Protects value from XSS injection by replacing some characters by XML / HTML entities
+     * @param string $input The unprotected value
+     * @return string A safe string
+     */
+    public static function unXSS($input)
+    {
+        return htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
     }
 }

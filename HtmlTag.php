@@ -6,6 +6,9 @@ namespace HtmlGenerator;
 
 class HtmlTag extends Markup
 {
+    /** @var int The language convention used for XSS avoiding */
+    public static $outputLanguage = ENT_HTML5;
+
     protected $autocloseTagsList = array(
         'img', 'br', 'hr', 'input', 'area', 'link', 'meta', 'param'
     );
