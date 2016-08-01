@@ -59,14 +59,11 @@ class Markup
      */
     public function addElement($tag)
     {
-        if (is_object($tag) && $tag instanceof self) {
-            $htmlTag = $tag;
-            $htmlTag->_top = $this->_top;
-        } else {
-            $htmlTag = new static($tag, (is_null($this->_top) ? $this : $this->_top ));
-        }
-        $this->content[] = $htmlTag;
+        $htmlTag = (is_object($tag) && $tag instanceof self) ? $tag : new static($tag);
+        $htmlTag->_top = $this->getTop();
         $htmlTag->_parent = &$this;
+
+        $this->content[] = $htmlTag;
         return $htmlTag;
     }
 
@@ -106,6 +103,15 @@ class Markup
     {
         $this->addElement('')->text = $value;
         return $this;
+    }
+
+    /**
+     * Returns the top element
+     * @return Markup
+     */
+    public function getTop()
+    {
+        return $this->_top===null ? $this : $this->_top;
     }
 
     /**
@@ -199,7 +205,7 @@ class Markup
      */
     public function __toString()
     {
-        return (is_null($this->_top) ? $this->toString() : $this->_top->toString());
+        return $this->getTop()->toString();
     }
 
     /**
