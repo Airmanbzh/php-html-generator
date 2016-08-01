@@ -120,7 +120,7 @@ class Markup implements ArrayAccess
      */
     public function offsetGet($attribute)
     {
-        return $this->offsetExists($attribute) ? $this->attributeList[$attribute] : trigger_error('Unfinded index "'.$attribute.'"');
+        return $this->offsetExists($attribute) ? $this->attributeList[$attribute] : null;
     }
 
     /**
