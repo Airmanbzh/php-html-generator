@@ -54,21 +54,18 @@ class Markup
     /**
      *
      * Add element at an existing Markup
-     * @param Markup $tag
+     * @param Markup|string $tag
      * @return Markup instance
      */
     public function addElement($tag)
     {
-        $htmlTag = null;
-        if (is_object($tag) && get_class($tag) == get_class($this)) {
+        if (is_object($tag) && $tag instanceof self) {
             $htmlTag = $tag;
             $htmlTag->_top = $this->_top;
-            $this->content[] = $htmlTag;
         } else {
-            $class = get_class($this);
-            $htmlTag = new $class($tag, (is_null($this->_top) ? $this : $this->_top ));
-            $this->content[] = $htmlTag;
+            $htmlTag = new static($tag, (is_null($this->_top) ? $this : $this->_top ));
         }
+        $this->content[] = $htmlTag;
         $htmlTag->_parent = &$this;
         return $htmlTag;
     }
