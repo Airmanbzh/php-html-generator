@@ -4,6 +4,11 @@
  */
 namespace HtmlGenerator;
 
+if (!defined('ENT_HTML5'))
+{
+	define('ENT_HTML5', 48);
+}
+
 class HtmlTag extends Markup
 {
     /** @var int The language convention used for XSS avoiding */
