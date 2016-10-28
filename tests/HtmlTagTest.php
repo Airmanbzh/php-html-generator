@@ -26,4 +26,11 @@ class HtmlTagTest extends PHPUnit_Framework_TestCase
 
 	    $this->assertEquals($div, '<div class="test2"></div>');
     }
+
+	public function testAutoClose()
+	{
+		$br = HtmlGenerator\HtmlTag::createElement('br');
+
+		$this->assertEquals($br, '<br/>');
+	}
 }

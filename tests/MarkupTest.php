@@ -138,11 +138,40 @@ class MarkupTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($div, '<div><p><a></a></p>test</div>');
     }
 
-    public function testRemove()
+    public function testRemoveXSS()
     {
         $div = HtmlGenerator\Markup::createElement('div')
 			->text('test');
 
         $this->assertEquals(HtmlGenerator\Markup::unXSS($div), '&lt;div&gt;test&lt;/div&gt;');
     }
+
+	public function testMagicStatic()
+	{
+
+		$div = HtmlGenerator\Markup::div()
+			->text('test');
+
+		$this->assertEquals($div, '<div>test</div>');
+	}
+
+	public function testMagic()
+	{
+
+		$div = HtmlGenerator\Markup::div()
+			->b()
+			->text('test');
+
+		$this->assertEquals($div, '<div><b>test</b></div>');
+	}
+
+	public function testMagicWithAttributes()
+	{
+
+		$div = HtmlGenerator\Markup::div()
+			->b(['id' => 'testId', 'tag' => 'tagTest'])
+			->text('test');
+
+		$this->assertEquals($div, '<div><b id="testId" tag="tagTest">test</b></div>');
+	}
 }
