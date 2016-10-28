@@ -6,14 +6,24 @@ namespace HtmlGenerator;
 
 use ArrayAccess;
 
+if (!defined('ENT_XML1'))
+{
+	define('ENT_XML1', 16);
+}
+if (!defined('ENT_XHTML'))
+{
+	define('ENT_XHTML', 32);
+}
+
+
 class Markup implements ArrayAccess
 {
     /** @var boolean Specifies if attribute values and text input sould be protected from XSS injection */
     public static $avoidXSS = false;
-    
+
     /** @var int The language convention used for XSS avoiding */
     public static $outputLanguage = ENT_XML1;
-    
+
     protected static $_instance = null;
 
     protected $_top = null;
@@ -137,7 +147,7 @@ class Markup implements ArrayAccess
      */
     public function attr($attribute, $value = null)
     {
-        return call_user_func_array([$this, 'set'], func_get_args());
+        return call_user_func_array(array($this, 'set'), func_get_args());
     }
 
     /**
@@ -225,16 +235,17 @@ class Markup implements ArrayAccess
     }
 
     /**
-     * Return last child of parent of current object
+     * Return previous element or itself
+	 *
      * @return Markup instance
      */
     public function getPrevious()
     {
-        $prev = null;
+        $prev = $this;
         $find = false;
         if (!is_null($this->_parent)) {
             foreach ($this->_parent->content as $c) {
-                if ($c == $this) {
+                if ($c === $this) {
                     $find=true;
                     break;
                 }
@@ -330,7 +341,7 @@ class Markup implements ArrayAccess
     protected function attributesToString()
     {
         $string = '';
-        $XMLConvention = in_array(static::$outputLanguage, [ENT_XML1, ENT_XHTML]);
+        $XMLConvention = in_array(static::$outputLanguage, array(ENT_XML1, ENT_XHTML));
         if (!empty($this->attributeList)) {
             foreach ($this->attributeList as $key => $value) {
                 if ($value!==null && ($value!==false || $XMLConvention)) {
@@ -346,7 +357,7 @@ class Markup implements ArrayAccess
                         ' ',
                         array_map(
                             static::$avoidXSS ? 'static::unXSS' : 'strval',
-                            is_array($value) ? $value : [$value]
+                            is_array($value) ? $value : array($value)
                         )
                     ) . '"';
                 }
@@ -364,10 +375,11 @@ class Markup implements ArrayAccess
         $string = '';
         if (!is_null($this->content)) {
             foreach ($this->content as $c) {
-                $string .= !empty($c->tag) ? CHR(13) . CHR(10) . CHR(9) : '';
-                $string .= $c->toString(); 
+//                $string .= !empty($c->tag) ? CHR(13) . CHR(10) . CHR(9) : '';
+                $string .= $c->toString();
             }
         }
+
         return $string;
     }
 
@@ -378,6 +390,16 @@ class Markup implements ArrayAccess
      */
     public static function unXSS($input)
     {
-        return htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
+	    $return = '';
+	    if (version_compare(phpversion(), '5.4', '<'))
+	    {
+	        $return = htmlspecialchars($input);
+	    }
+	    else
+	    {
+		    $return = htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
+	    }
+
+        return $return;
     }
 }

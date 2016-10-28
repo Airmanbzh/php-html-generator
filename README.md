@@ -2,6 +2,10 @@
 
 Create HTML tags and render them efficiently.
 
+Build status:
+* Master [![Build Status](https://travis-ci.org/Airmanbzh/php-html-generator.svg?branch=master)](https://travis-ci.org/Airmanbzh/php-html-generator)
+* Dev [![Build Status](https://travis-ci.org/Airmanbzh/php-html-generator.svg?branch=dev)](https://travis-ci.org/Airmanbzh/php-html-generator)
+
 ## Overview
 
     return HtmlTag::createElement();
