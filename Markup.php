@@ -137,7 +137,7 @@ class Markup implements ArrayAccess
      */
     public function attr($attribute, $value = null)
     {
-        return call_user_func_array([$this, 'set'], func_get_args());
+        return call_user_func_array(array($this, 'set'), func_get_args());
     }
 
     /**
@@ -226,7 +226,7 @@ class Markup implements ArrayAccess
 
     /**
      * Return previous element or itself
-	 * 
+	 *
      * @return Markup instance
      */
     public function getPrevious()
@@ -347,7 +347,7 @@ class Markup implements ArrayAccess
                         ' ',
                         array_map(
                             static::$avoidXSS ? 'static::unXSS' : 'strval',
-                            is_array($value) ? $value : [$value]
+                            is_array($value) ? $value : array($value)
                         )
                     ) . '"';
                 }
