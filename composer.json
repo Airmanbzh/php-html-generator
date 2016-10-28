@@ -15,6 +15,9 @@
 	"autoload": {
 		"psr-4": {"HtmlGenerator\\": ""}
 	},
+	"autoload-dev": {
+        "psr-4": { "HtmlGenerator\\Tests\\": "tests/" }
+    },
 	"support": {
 		"issues": "https://github.com/Airmanbzh/php-html-generator/issues"
 	},

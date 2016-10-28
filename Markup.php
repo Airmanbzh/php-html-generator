@@ -10,10 +10,10 @@ class Markup implements ArrayAccess
 {
     /** @var boolean Specifies if attribute values and text input sould be protected from XSS injection */
     public static $avoidXSS = false;
-    
+
     /** @var int The language convention used for XSS avoiding */
     public static $outputLanguage = ENT_XML1;
-    
+
     protected static $_instance = null;
 
     protected $_top = null;
@@ -225,16 +225,17 @@ class Markup implements ArrayAccess
     }
 
     /**
-     * Return last child of parent of current object
+     * Return previous element or itself
+	 * 
      * @return Markup instance
      */
     public function getPrevious()
     {
-        $prev = null;
+        $prev = $this;
         $find = false;
         if (!is_null($this->_parent)) {
             foreach ($this->_parent->content as $c) {
-                if ($c == $this) {
+                if ($c === $this) {
                     $find=true;
                     break;
                 }
@@ -364,10 +365,11 @@ class Markup implements ArrayAccess
         $string = '';
         if (!is_null($this->content)) {
             foreach ($this->content as $c) {
-                $string .= !empty($c->tag) ? CHR(13) . CHR(10) . CHR(9) : '';
-                $string .= $c->toString(); 
+//                $string .= !empty($c->tag) ? CHR(13) . CHR(10) . CHR(9) : '';
+                $string .= $c->toString();
             }
         }
+
         return $string;
     }
 
