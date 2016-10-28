@@ -6,6 +6,11 @@ namespace HtmlGenerator;
 
 use ArrayAccess;
 
+if (!defined('ENT_XML1'))
+{
+	define('ENT_XML1', 16);
+}
+
 class Markup implements ArrayAccess
 {
     /** @var boolean Specifies if attribute values and text input sould be protected from XSS injection */
@@ -380,6 +385,16 @@ class Markup implements ArrayAccess
      */
     public static function unXSS($input)
     {
-        return htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
+	    $return = '';
+	    if (version_compare(phpversion(), '5.3', '<='))
+	    {
+	        $return = htmlspecialchars($input);
+	    }
+	    else
+	    {
+		    $return = htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
+	    }
+
+        return $return;
     }
 }
