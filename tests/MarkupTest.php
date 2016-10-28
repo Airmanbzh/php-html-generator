@@ -43,7 +43,7 @@ class MarkupTest extends PHPUnit_Framework_TestCase
     public function testSetWithArray()
     {
         $div = HtmlGenerator\Markup::createElement('div');
-		$div->set(['id' => 'testId', 'class' => 'test']);
+		$div->set(array('id' => 'testId', 'class' => 'test'));
         $this->assertEquals($div, '<div id="testId" class="test"></div>');
     }
 
