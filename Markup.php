@@ -323,7 +323,7 @@ class Markup implements ArrayAccess
             $string .=  '<' . $this->tag;
             $string .= $this->attributesToString();
             if ($this->autoclosed) {
-                $string .= '/>' . CHR(13) . CHR(10) . CHR(9);
+                $string .= '/>';
             } else {
                 $string .= '>' . $this->contentToString() . '</' . $this->tag . '>';
             }
@@ -375,7 +375,6 @@ class Markup implements ArrayAccess
         $string = '';
         if (!is_null($this->content)) {
             foreach ($this->content as $c) {
-//                $string .= !empty($c->tag) ? CHR(13) . CHR(10) . CHR(9) : '';
                 $string .= $c->toString();
             }
         }
