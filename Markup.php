@@ -391,7 +391,7 @@ class Markup implements ArrayAccess
     public static function unXSS($input)
     {
 	    $return = '';
-	    if (version_compare(phpversion(), '5.3', '<='))
+	    if (version_compare(phpversion(), '5.4', '<'))
 	    {
 	        $return = htmlspecialchars($input);
 	    }
