@@ -169,7 +169,7 @@ class MarkupTest extends PHPUnit_Framework_TestCase
 	{
 
 		$div = HtmlGenerator\Markup::div()
-			->b(['id' => 'testId', 'tag' => 'tagTest'])
+			->b(array('id' => 'testId', 'tag' => 'tagTest'))
 			->text('test');
 
 		$this->assertEquals($div, '<div><b id="testId" tag="tagTest">test</b></div>');
