@@ -331,7 +331,7 @@ class Markup implements ArrayAccess
     protected function attributesToString()
     {
         $string = '';
-        $XMLConvention = in_array(static::$outputLanguage, [ENT_XML1, ENT_XHTML]);
+        $XMLConvention = in_array(static::$outputLanguage, array(ENT_XML1, ENT_XHTML));
         if (!empty($this->attributeList)) {
             foreach ($this->attributeList as $key => $value) {
                 if ($value!==null && ($value!==false || $XMLConvention)) {
