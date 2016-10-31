@@ -11,5 +11,5 @@ before_script:
   - phpenv rehash
 script:
   ## PHP_CodeSniffer
-  - phpcs --standard=PSR1 ./*
-  - phpcs --standard=PSR2 ./*
+  - phpcs --standard=PSR1 ./*.php
+  - phpcs --standard=PSR2 ./*.php
