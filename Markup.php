@@ -7,7 +7,7 @@ namespace HtmlGenerator;
 use ArrayAccess;
 
 if (!defined('ENT_XML1')) {
-	define('ENT_XML1', 16);
+    define('ENT_XML1', 16);
 }
 if (!defined('ENT_XHTML')) {
     define('ENT_XHTML', 32);
