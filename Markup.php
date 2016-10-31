@@ -6,13 +6,11 @@ namespace HtmlGenerator;
 
 use ArrayAccess;
 
-if (!defined('ENT_XML1'))
-{
-	define('ENT_XML1', 16);
+if (!defined('ENT_XML1')) {
+    define('ENT_XML1', 16);
 }
-if (!defined('ENT_XHTML'))
-{
-	define('ENT_XHTML', 32);
+if (!defined('ENT_XHTML')) {
+    define('ENT_XHTML', 32);
 }
 
 
@@ -24,10 +22,10 @@ class Markup implements ArrayAccess
     /** @var int The language convention used for XSS avoiding */
     public static $outputLanguage = ENT_XML1;
 
-    protected static $_instance = null;
+    protected static $instance = null;
 
-    protected $_top = null;
-    protected $_parent = null;
+    protected $top = null;
+    protected $parent = null;
 
     protected $tag = null;
     public $attributeList = null;
@@ -49,7 +47,7 @@ class Markup implements ArrayAccess
     protected function __construct($tag, $top = null)
     {
         $this->tag = $tag;
-        $this->_top =& $top;
+        $this->top =& $top;
         $this->attributeList = array();
         $this->classList = array();
         $this->content = array();
@@ -101,8 +99,8 @@ class Markup implements ArrayAccess
      */
     public static function createElement($tag = '')
     {
-        self::$_instance = new static($tag);
-        return self::$_instance;
+        self::$instance = new static($tag);
+        return self::$instance;
     }
 
     /**
@@ -114,8 +112,8 @@ class Markup implements ArrayAccess
     public function addElement($tag = '')
     {
         $htmlTag = (is_object($tag) && $tag instanceof self) ? $tag : new static($tag);
-        $htmlTag->_top = $this->getTop();
-        $htmlTag->_parent = &$this;
+        $htmlTag->top = $this->getTop();
+        $htmlTag->parent = &$this;
 
         $this->content[] = $htmlTag;
         return $htmlTag;
@@ -129,7 +127,7 @@ class Markup implements ArrayAccess
      */
     public function set($attribute, $value = null)
     {
-        if(is_array($attribute)) {
+        if (is_array($attribute)) {
             foreach ($attribute as $key => $value) {
                 $this[$key] = $value;
             }
@@ -192,8 +190,9 @@ class Markup implements ArrayAccess
      */
     public function offsetUnset($attribute)
     {
-        if ($this->offsetExists($attribute))
+        if ($this->offsetExists($attribute)) {
             unset($this->attributeList[$attribute]);
+        }
     }
 
     /**
@@ -214,7 +213,7 @@ class Markup implements ArrayAccess
      */
     public function getTop()
     {
-        return $this->_top===null ? $this : $this->_top;
+        return $this->top===null ? $this : $this->top;
     }
 
     /**
@@ -223,7 +222,7 @@ class Markup implements ArrayAccess
      */
     public function getParent()
     {
-        return $this->_parent;
+        return $this->parent;
     }
 
     /**
@@ -231,20 +230,20 @@ class Markup implements ArrayAccess
      */
     public function getFirst()
     {
-        return is_null($this->_parent) ? null : $this->_parent->content[0];
+        return is_null($this->parent) ? null : $this->parent->content[0];
     }
 
     /**
      * Return previous element or itself
-	 *
+     *
      * @return Markup instance
      */
     public function getPrevious()
     {
         $prev = $this;
         $find = false;
-        if (!is_null($this->_parent)) {
-            foreach ($this->_parent->content as $c) {
+        if (!is_null($this->parent)) {
+            foreach ($this->parent->content as $c) {
                 if ($c === $this) {
                     $find=true;
                     break;
@@ -264,8 +263,8 @@ class Markup implements ArrayAccess
     {
         $next = null;
         $find = false;
-        if (!is_null($this->_parent)) {
-            foreach ($this->_parent->content as $c) {
+        if (!is_null($this->parent)) {
+            foreach ($this->parent->content as $c) {
                 if ($find) {
                     $next = &$c;
                     break;
@@ -283,7 +282,7 @@ class Markup implements ArrayAccess
      */
     public function getLast()
     {
-        return is_null($this->_parent) ? null : $this->_parent->content[count($this->_parent->content) - 1];
+        return is_null($this->parent) ? null : $this->parent->content[count($this->parent->content) - 1];
     }
 
     /**
@@ -291,7 +290,7 @@ class Markup implements ArrayAccess
      */
     public function remove()
     {
-        $parent = $this->_parent;
+        $parent = $this->parent;
         if (!is_null($parent)) {
             foreach ($parent->content as $key => $value) {
                 if ($parent->content[$key] == $this) {
@@ -346,7 +345,7 @@ class Markup implements ArrayAccess
             foreach ($this->attributeList as $key => $value) {
                 if ($value!==null && ($value!==false || $XMLConvention)) {
                     $string.= ' ' . $key;
-                    if($value===true) {
+                    if ($value===true) {
                         if ($XMLConvention) {
                             $value = $key;
                         } else {
@@ -389,15 +388,12 @@ class Markup implements ArrayAccess
      */
     public static function unXSS($input)
     {
-	    $return = '';
-	    if (version_compare(phpversion(), '5.4', '<'))
-	    {
-	        $return = htmlspecialchars($input);
-	    }
-	    else
-	    {
-		    $return = htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
-	    }
+        $return = '';
+        if (version_compare(phpversion(), '5.4', '<')) {
+            $return = htmlspecialchars($input);
+        } else {
+            $return = htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
+        }
 
         return $return;
     }
