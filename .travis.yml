@@ -7,9 +7,9 @@ php:
   - '7.0'
 before_script:
   ## PHP_CodeSniffer
-  - pyrus install pear/PHP_CodeSniffer
-  - phpenv rehash
+  - if [ ${TRAVIS_PHP_VERSION:0:1} != "7"]; then pyrus install pear/PHP_CodeSniffer; fi
+  - if [ ${TRAVIS_PHP_VERSION:0:1} != "7"]; then phpenv rehash; fi
 script:
   ## PHP_CodeSniffer
-  - phpcs --standard=PSR1 ./*.php
-  - phpcs --standard=PSR2 ./*.php
+  - if [ ${TRAVIS_PHP_VERSION:0:1} != "7"]; then phpcs --standard=PSR1 ./*.php; fi
+  - if [ ${TRAVIS_PHP_VERSION:0:1} != "7"]; then phpcs --standard=PSR2 ./*.php; fi
