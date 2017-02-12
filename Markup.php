@@ -536,10 +536,7 @@ class Markup implements ArrayAccess
     {
         $return = '';
         if (version_compare(phpversion(), '5.4', '<')) {
-            $return = htmlspecialchars(
-                $input,
-                ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage
-            );
+            $return = htmlspecialchars($input);
         } else {
             $return = htmlentities(
                 $input,
