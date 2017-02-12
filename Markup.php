@@ -1,55 +1,121 @@
 <?php
-/*
- * @author Airmanbzh
+/**
+ * Add's the tags information more dynamically.
+ *
+ * PHP version 5.3
+ *
+ * @category Markup
+ * @package  HtmlGenerator
+ * @author   Airmanbzh <noemail@noemail.com>
+ * @license  http://opensource.org/licenses/mit-license.php MIT
+ * @link     https://github.com/airmanbzh/php-html-generator
  */
 namespace HtmlGenerator;
-
 use ArrayAccess;
-
-if (!defined('ENT_XML1'))
-{
-	define('ENT_XML1', 16);
+if (!defined('ENT_XML1')) {
+    define('ENT_XML1', 16);
 }
-if (!defined('ENT_XHTML'))
-{
-	define('ENT_XHTML', 32);
+if (!defined('ENT_XHTML')) {
+    define('ENT_XHTML', 32);
 }
-
-
+/**
+ * Add's the tags information more dynamically.
+ *
+ * PHP version 5.3
+ *
+ * @category Markup
+ * @package  HtmlGenerator
+ * @author   Airmanbzh <noemail@noemail.com>
+ * @license  http://opensource.org/licenses/mit-license.php MIT
+ * @link     https://github.com/airmanbzh/php-html-generator
+ */
 class Markup implements ArrayAccess
 {
-    /** @var boolean Specifies if attribute values and text input sould be protected from XSS injection */
+    /**
+     * Specifies if attribute values and text input
+     * should be protected from XSS injection.
+     *
+     * @var boolean
+     */
     public static $avoidXSS = false;
-
-    /** @var int The language convention used for XSS avoiding */
+    /**
+     * The language convention used for XSS avoiding.
+     *
+     * @var int
+     */
     public static $outputLanguage = ENT_XML1;
-
-    protected static $_instance = null;
-
-    protected $_top = null;
-    protected $_parent = null;
-
+    /**
+     * The working instance.
+     *
+     * @var object
+     */
+    protected static $instance = null;
+    /**
+     * Top elements.
+     *
+     * @var mixed
+     */
+    protected $top = null;
+    /**
+     * Parent elements.
+     *
+     * @var mixed
+     */
+    protected $parent = null;
+    /**
+     * The tag.
+     *
+     * @var string
+     */
     protected $tag = null;
+    /**
+     * The attribute list.
+     *
+     * @var mixed
+     */
     public $attributeList = null;
+    /**
+     * The class list.
+     *
+     * @var mixed
+     */
     protected $classList = null;
-
+    /**
+     * The content.
+     *
+     * @var string
+     */
     protected $content = null;
+    /**
+     * The text.
+     *
+     * @var string
+     */
     protected $text = '';
-
+    /**
+     * Auto closed.
+     *
+     * @var bool
+     */
     protected $autoclosed = false;
-
+    /**
+     * Void elements list.
+     *
+     * @var array
+     */
     protected $autocloseTagsList = array();
-
     /**
      * Constructor
-     * @param mixed $tag
-     * @param Markup $top
-     * @return Markup instance
+     *
+     * @param mixed  $tag The Tag to set.
+     * @param Markup $top The top to set.
+     *
+     * @return Markup
      */
     protected function __construct($tag, $top = null)
     {
         $this->tag = $tag;
-        $this->_top =& $top;
+        $this->top =& $top;
         $this->attributeList = array();
         $this->classList = array();
         $this->content = array();
@@ -59,192 +125,241 @@ class Markup implements ArrayAccess
     }
 
     /**
-     * Builds markup from static context
-     * @param string $tag The tag name
-     * @param array  $content The content of the current tag, first argument can be an array containing the attributes
+     * Builds markup from static context.
+     *
+     * @param string $tag     The tag name.
+     * @param array  $content The content of the current tag,
+     *                        first argument can be an array containing
+     *                        the attributes
+     *
      * @return Markup
      */
     public static function __callStatic($tag, $content)
     {
         return self::createElement($tag)
-            ->attr(count($content) && is_array($content[0]) ? array_pop($content) : array())
-            ->text(implode('', $content));
+            ->attr(
+                (
+                    count($content) && is_array($content[0]) ?
+                    array_pop($content) :
+                    array()
+                )
+            )->text(
+                implode('', $content)
+            );
     }
-
     /**
      * Add a children to the current element
-     * @param string $tag The name of the tag
-     * @param array  $content The content of the current tag, first argument can be an array containing the attributes
-     * @return Markup instance
+     *
+     * @param string $tag     The name of the tag
+     * @param array  $content The content of the current tag,
+     *                        first argument can be an array
+     *                        containing the attributes
+     *
+     * @return Markup
      */
     public function __call($tag, $content)
     {
         return $this
             ->addElement($tag)
-            ->attr(count($content) && is_array($content[0]) ? array_pop($content) : array())
-            ->text(implode('', $content));
+            ->attr(
+                (
+                    count($content) && is_array($content[0]) ?
+                    array_pop($content) :
+                    array()
+                )
+            )->text(
+                implode('', $content)
+            );
     }
-
     /**
-     * Alias for getParent()
+     * Alias for getParent method.
+     *
      * @return Markup
      */
     public function __invoke()
     {
         return $this->getParent();
     }
-
     /**
      * Create a new Markup
-     * @param string $tag
-     * @return Markup instance
+     *
+     * @param string $tag The tag to create.
+     *
+     * @return Markup
      */
     public static function createElement($tag = '')
     {
-        self::$_instance = new static($tag);
-        return self::$_instance;
+        self::$instance = new static($tag);
+        return self::$instance;
     }
 
     /**
+     * Add element at an existing Markup.
      *
-     * Add element at an existing Markup
-     * @param Markup|string $tag
+     * @param Markup|string $tag The element to add.
+     *
      * @return Markup instance
      */
     public function addElement($tag = '')
     {
-        $htmlTag = (is_object($tag) && $tag instanceof self) ? $tag : new static($tag);
-        $htmlTag->_top = $this->getTop();
-        $htmlTag->_parent = &$this;
-
+        $htmlTag = (
+            is_object($tag) && $tag instanceof self ?
+            $tag :
+            new static($tag)
+        );
+        $htmlTag->top = $this->getTop();
+        $htmlTag->parent = &$this;
         $this->content[] = $htmlTag;
         return $htmlTag;
     }
-
     /**
      * (Re)Define an attribute or many attributes
-     * @param string|array $attribute
-     * @param string $value
+     *
+     * @param string|array $attribute The attribute to add.
+     * @param string       $value     The value of the attribute to add.
+     *
      * @return Markup instance
      */
     public function set($attribute, $value = null)
     {
-        if(is_array($attribute)) {
-            foreach ($attribute as $key => $value) {
+        if (is_array($attribute)) {
+            foreach ($attribute as $key => &$value) {
                 $this[$key] = $value;
+                unset($value);
             }
         } else {
             $this[$attribute] = $value;
         }
         return $this;
     }
-
     /**
-     * alias to method "set"
-     * @param string|array $attribute
-     * @param string $value
+     * Alias to method "set".
+     *
+     * @param string|array $attribute The attribute to add.
+     * @param string       $value     The value of the attribute to add.
+     *
      * @return Markup instance
      */
     public function attr($attribute, $value = null)
     {
-        return call_user_func_array(array($this, 'set'), func_get_args());
+        return call_user_func_array(
+            array($this, 'set'),
+            func_get_args()
+        );
     }
-
     /**
      * Checks if an attribute is set for this tag and not null
      *
      * @param string $attribute The attribute to test
+     *
      * @return boolean The result of the test
      */
     public function offsetExists($attribute)
     {
         return isset($this->attributeList[$attribute]);
     }
-
     /**
-     * Returns the value the attribute set for this tag
+     * Returns the value the attribute set for this tag.
      *
-     * @param string $attribute The attribute to get
-     * @return mixed The stored result in this object
+     * @param string $attribute The attribute to get.
+     *
+     * @return mixed The stored result in this object.
      */
     public function offsetGet($attribute)
     {
-        return $this->offsetExists($attribute) ? $this->attributeList[$attribute] : null;
+        return (
+            $this->offsetExists($attribute) ?
+            $this->attributeList[$attribute] :
+            null
+        );
     }
-
     /**
      * Sets the value an attribute for this tag
      *
-     * @param string $attribute The attribute to set
-     * @param mixed $value The value to set
+     * @param string $attribute The attribute to set.
+     * @param mixed  $value     The value to set.
+     *
      * @return void
      */
     public function offsetSet($attribute, $value)
     {
         $this->attributeList[$attribute] = $value;
     }
-
     /**
      * Removes an attribute
      *
      * @param mixed $attribute The attribute to unset
+     *
      * @return void
      */
     public function offsetUnset($attribute)
     {
-        if ($this->offsetExists($attribute))
+        if ($this->offsetExists($attribute)) {
             unset($this->attributeList[$attribute]);
+        }
     }
-
     /**
+     * Define text content.
      *
-     * Define text content
-     * @param string $value
-     * @return Markup instance
+     * @param string $value The value of the text.
+     *
+     * @return Markup
      */
     public function text($value)
     {
-        $this->addElement('')->text = static::$avoidXSS ? static::unXSS($value) : $value;
+        $this->addElement('')->text = (
+            static::$avoidXSS ?
+            static::unXSS($value) :
+            $value
+        );
         return $this;
     }
-
     /**
-     * Returns the top element
+     * Returns the top element.
+     *
      * @return Markup
      */
     public function getTop()
     {
-        return $this->_top===null ? $this : $this->_top;
+        return (
+            $this->top === null ?
+            $this :
+            $this->top
+        );
     }
-
     /**
-     *
      * Return parent of current element
+     *
+     * @return Markup
      */
     public function getParent()
     {
-        return $this->_parent;
+        return $this->parent;
     }
-
     /**
-     * Return first child of parent of current object
+     * Return first child of parent of current object.
+     *
+     * @return mixed
      */
     public function getFirst()
     {
-        return is_null($this->_parent) ? null : $this->_parent->content[0];
+        return (
+            is_null($this->parent) ?
+            null :
+            $this->parent->content[0]
+        );
     }
-
     /**
-     * Return previous element or itself
-	 *
-     * @return Markup instance
+     * Return previous element or itself.
+     *
+     * @return Markup
      */
     public function getPrevious()
     {
         $prev = $this;
         $find = false;
-        if (!is_null($this->_parent)) {
-            foreach ($this->_parent->content as $c) {
+        if (!is_null($this->parent)) {
+            foreach ($this->parent->content as $c) {
                 if ($c === $this) {
                     $find=true;
                     break;
@@ -256,16 +371,17 @@ class Markup implements ArrayAccess
         }
         return $prev;
     }
-
     /**
-     * @return Markup last child of parent of current object
+     * Returns Next child of parent of current object.
+     *
+     * @return Markup
      */
     public function getNext()
     {
         $next = null;
         $find = false;
-        if (!is_null($this->_parent)) {
-            foreach ($this->_parent->content as $c) {
+        if (!is_null($this->parent)) {
+            foreach ($this->parent->content as $c) {
                 if ($find) {
                     $next = &$c;
                     break;
@@ -277,21 +393,27 @@ class Markup implements ArrayAccess
         }
         return $next;
     }
-
     /**
-     * @return Markup last child of parent of current object
+     * Returns Last child of parent of current object.
+     *
+     * @return Markup
      */
     public function getLast()
     {
-        return is_null($this->_parent) ? null : $this->_parent->content[count($this->_parent->content) - 1];
+        return (
+            is_null($this->parent) ?
+            null :
+            $this->parent->content[count($this->parent->content) - 1]
+        );
     }
-
     /**
-     * @return Markup return parent or null
+     * Removes parent.
+     *
+     * @return Markup
      */
     public function remove()
     {
-        $parent = $this->_parent;
+        $parent = $this->parent;
         if (!is_null($parent)) {
             foreach ($parent->content as $key => $value) {
                 if ($parent->content[$key] == $this) {
@@ -302,18 +424,18 @@ class Markup implements ArrayAccess
         }
         return null;
     }
-
     /**
-     * Generation method
+     * Generation method.
+     *
      * @return string
      */
     public function __toString()
     {
         return $this->getTop()->toString();
     }
-
     /**
      * Generation method
+     *
      * @return string
      */
     public function toString()
@@ -333,33 +455,50 @@ class Markup implements ArrayAccess
         }
         return $string;
     }
-
     /**
-     * return current list of attribute as a string $key="$val" $key2="$val2"
+     * Returns current list of attributes as string.
+     *
      * @return string
      */
     protected function attributesToString()
     {
         $string = '';
-        $XMLConvention = in_array(static::$outputLanguage, array(ENT_XML1, ENT_XHTML));
+        $XMLConvention = in_array(
+            static::$outputLanguage,
+            array(ENT_XML1, ENT_XHTML)
+        );
         if (!empty($this->attributeList)) {
-            foreach ($this->attributeList as $key => $value) {
-                if ($value!==null && ($value!==false || $XMLConvention)) {
-                    $string.= ' ' . $key;
-                    if($value===true) {
+            foreach ($this->attributeList as $key => &$value) {
+                if ($value !== null
+                    && ($value!==false
+                    || $XMLConvention)
+                ) {
+                    $string .= sprintf(
+                        ' %s',
+                        $key
+                    );
+                    if ($value === true) {
                         if ($XMLConvention) {
                             $value = $key;
                         } else {
                             continue;
                         }
                     }
-                    $string.= '="' . implode(
-                        ' ',
+                    $string .= sprintf(
+                        '="%s"',
                         array_map(
-                            static::$avoidXSS ? 'static::unXSS' : 'strval',
-                            is_array($value) ? $value : array($value)
+                            (
+                                static::$avoidXSS ?
+                                'static:unXSS' :
+                                'strval'
+                            ),
+                            (
+                                is_array($value) ?
+                                $value :
+                                array($value)
+                            )
                         )
-                    ) . '"';
+                    );
                 }
             }
         }
@@ -367,7 +506,8 @@ class Markup implements ArrayAccess
     }
 
     /**
-     * return current list of content as a string
+     * Return current list of content as a string.
+     *
      * @return string
      */
     protected function contentToString()
@@ -381,24 +521,30 @@ class Markup implements ArrayAccess
 
         return $string;
     }
-
     /**
-     * Protects value from XSS injection by replacing some characters by XML / HTML entities
+     * Protects value from XSS injection by replacing some
+     * characters by XML / HTML entities.
+     *
      * @param string $input The unprotected value
-     * @return string A safe string
+     *
+     * @return string
      */
     public static function unXSS($input)
     {
-	    $return = '';
-	    if (version_compare(phpversion(), '5.4', '<'))
-	    {
-	        $return = htmlspecialchars($input);
-	    }
-	    else
-	    {
-		    $return = htmlentities($input, ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage);
-	    }
-
+        $return = '';
+        if (version_compare(phpversion(), '5.4', '<')) {
+            $return = htmlspecialchars(
+                $input,
+                ENT_QUOTES | ENT_DISALLOWED | ENT_HTML401,
+                static::$outputLanguage
+            );
+        } else {
+            $return = htmlentities(
+                $input,
+                ENT_QUOTES | ENT_DISALLOWED | ENT_HTML401,
+                static::$outputLanguage
+            );
+        }
         return $return;
     }
 }
