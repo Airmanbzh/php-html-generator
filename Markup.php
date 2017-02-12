@@ -486,16 +486,19 @@ class Markup implements ArrayAccess
                     }
                     $string .= sprintf(
                         '="%s"',
-                        array_map(
-                            (
-                                static::$avoidXSS ?
-                                'static:unXSS' :
-                                'strval'
-                            ),
-                            (
-                                is_array($value) ?
-                                $value :
-                                array($value)
+                        implode(
+                            ' ',
+                            array_map(
+                                (
+                                    static::$avoidXSS ?
+                                    'static:unXSS' :
+                                    'strval'
+                                ),
+                                (
+                                    is_array($value) ?
+                                    $value :
+                                    array($value)
+                                )
                             )
                         )
                     );
@@ -535,14 +538,12 @@ class Markup implements ArrayAccess
         if (version_compare(phpversion(), '5.4', '<')) {
             $return = htmlspecialchars(
                 $input,
-                ENT_QUOTES | ENT_DISALLOWED | ENT_HTML401,
-                static::$outputLanguage
+                ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage
             );
         } else {
             $return = htmlentities(
                 $input,
-                ENT_QUOTES | ENT_DISALLOWED | ENT_HTML401,
-                static::$outputLanguage
+                ENT_QUOTES | ENT_DISALLOWED | static::$outputLanguage
             );
         }
         return $return;
