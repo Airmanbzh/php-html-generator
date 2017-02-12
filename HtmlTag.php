@@ -93,7 +93,7 @@ class HtmlTag extends Markup
         if (!isset($this->attributeList['class'])
             || is_null($this->attributeList['class'])
         ) {
-            $this->attributeList['class'] = [];
+            $this->attributeList['class'] = array();
         }
         /**
          * Classes are separated by spaces.
