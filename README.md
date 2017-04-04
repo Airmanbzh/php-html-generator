@@ -41,7 +41,7 @@ Build status:
 	$container->addElement('p')->text('a text');
 	$container->addElement('a')->text('a link');
     // <div><p>a text</p><a>a link</a></div>
-	
+
 ### Attributes
 
 #### Classics attributes (method : 'set')
@@ -52,7 +52,7 @@ Build status:
 		->text('my link');
 	echo( $tag );
     // <a href='./sample.php' id='myID'>my link</a>
-	
+
 #### ID (method : 'id')
 
     $tag = $html->tag('div')
@@ -69,7 +69,14 @@ Build status:
 		->removeClass('firstClass');
 	echo( $tag );
     // <div class="secondClass">my content</div>
-	
+
+#### Boolean attributes
+
+    $tag = $html->tag('div')
+    ->set('data-foo',true)
+	echo( $tag );
+    // <div data-foo></div>
+
 ### More
 
 	Text and content are generated according to the order of addition
@@ -78,7 +85,7 @@ Build status:
 		->addElement('a')
 		->text('a link');
 	// <p>ma text<a>a link</a></p>
-	
+
 	To generate content before text, 2 solutions :
 	$tag = $html->tag('p')
 		->addElement('a')
@@ -89,5 +96,5 @@ Build status:
 	$tag = $html->tag('p');
 	$tag->addElement('a')->text('a link');
 	$tag->text('a text');
-	
+
 	// <p><a>a link</a>a text</p>
