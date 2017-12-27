@@ -13,7 +13,7 @@
 		}
 	],
 	"autoload": {
-		"psr-4": {"HtmlGenerator\\": ""}
+		"psr-4": {"HtmlGenerator\\": "src/"}
 	},
 	"autoload-dev": {
 		"psr-4": { "HtmlGenerator\\Tests\\": "tests/" }
