@@ -111,7 +111,7 @@ class Markup implements ArrayAccess
      */
     public function addElement($tag = '')
     {
-        $htmlTag = (is_object($tag) && $tag instanceof self) ? $tag : new static($tag);
+        $htmlTag = (is_object($tag) && $tag instanceof self) ? clone $tag : new static($tag);
         $htmlTag->top = $this->getTop();
         $htmlTag->parent = &$this;
 
