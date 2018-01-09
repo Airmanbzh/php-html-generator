@@ -68,7 +68,6 @@ $container->addElement('a')->text('a link');
 ```html
 <div><p>a text</p><a>a link</a></div>
 ```
-	
 ### Attributes
 
 #### Classics attributes (method : 'set')
