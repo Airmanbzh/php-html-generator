@@ -58,7 +58,7 @@ Build status:
     $tag = $html->tag('div')
 		->id('myID');
 	echo( $tag );
-    // <div id='myID'>my link</a>
+    // <div id='myID'>my link</div>
 
 #### Class management (method : 'addClass'/'removeClass')
 
