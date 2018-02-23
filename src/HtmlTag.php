@@ -63,7 +63,7 @@ class HtmlTag extends Markup
      */
     public function addCustomParams($param)
     {
-        if(is_array($param)) {
+        if (is_array($param)) {
             foreach ($param as $key => $p) {
                 if (!isset($this->attributeList[$key]) || is_null($this->attributeList[$key])) {
                     $this->attributeList[$key] = array();
