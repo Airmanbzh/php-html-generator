@@ -1,5 +1,5 @@
 <?php
-class HtmlTagTest extends PHPUnit_Framework_TestCase
+class HtmlTagTest extends \PHPUnit\Framework\TestCase
 {
     public function testId()
     {
@@ -33,4 +33,12 @@ class HtmlTagTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($br, '<br/>');
 	}
+
+    public function testInstanceReturnWithCreateElement()
+    {
+        $div = HtmlGenerator\HtmlTag::createElement('div');
+
+        $this->assertTrue($div instanceof HtmlGenerator\HtmlTag);
+        $this->assertTrue(method_exists($div, 'addClass'));
+    }
 }
