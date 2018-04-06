@@ -37,3 +37,5 @@ script:
   ## - phpmd src/ text codesize,unusedcode,naming,design
   ## PHPLOC
   - php phploc.phar src/
+  ## PHPUNIT
+  - phpunit

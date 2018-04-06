@@ -1,13 +1,6 @@
 <?php
-class MarkupTest extends PHPUnit_Framework_TestCase
+class MarkupTest extends \PHPUnit\Framework\TestCase
 {
-//    public function setUp()
-//    {
-//    }
-//
-//    public function tearDown()
-//    {
-//    }
     public function testCreation()
     {
         $this->assertEquals(get_class(HtmlGenerator\Markup::createElement()), "HtmlGenerator\Markup");
