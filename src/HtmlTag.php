@@ -55,4 +55,24 @@ class HtmlTag extends Markup
         }
         return $this;
     }
+
+    /**
+     * Add custom params from array
+     * @param array $param
+     * @return HtmlTag instance
+     */
+    public function addCustomParams($param)
+    {
+        if (is_array($param)) {
+            foreach ($param as $key => $p) {
+                if (!isset($this->attributeList[$key]) || is_null($this->attributeList[$key])) {
+                    $this->attributeList[$key] = array();
+                }
+                $this->attributeList[$key][] = $p;
+            }
+            return $this;
+        } else {
+            throw new Exception("ERROR: The param should be an array");
+        }
+    }
 }
